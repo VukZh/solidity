@@ -33,7 +33,7 @@ interface INativeBank {
      * @param account Адрес счёта.
      * @return Баланс счёта.
      */
-    function balanceOf(address account) external view returns (uint256);
+    // function balanceOf(address account) external view returns(uint256);
 
     /**
      * @dev Вносит средства на счёт.
@@ -54,29 +54,26 @@ interface INativeBank {
 
 contract Bank_1 is INativeBank {
 
-
-    mapping(address => uint256) private balances;
+    mapping(address => uint256) public balanceOf;
 
     error ZeroAmount(address account);
-
-    function balanceOf(address account) external view returns (uint256) {
-        return balances[account];
-    }
 
     function deposit() external payable {
         if (msg.value == 0) {
             revert ZeroAmount(msg.sender);
         }
-        balances[msg.sender] += msg.value;
+        balanceOf[msg.sender] += msg.value;
         emit Deposit(msg.sender, msg.value);
     }
 
     function withdraw(uint256 amount) external {
-        if (amount > balances[msg.sender]) {
-            revert WithdrawalAmountExceedsBalance(msg.sender, amount, balances[msg.sender]);
+        uint256 currentBalance = balanceOf[msg.sender];
+        if (amount > currentBalance) {
+            revert WithdrawalAmountExceedsBalance(msg.sender, amount, currentBalance);
         }
-        balances[msg.sender] -= amount;
+        unchecked {
+            balanceOf[msg.sender] -= amount;
+        }
         emit Withdrawal(msg.sender, amount);
     }
-
 }
