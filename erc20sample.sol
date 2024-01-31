@@ -14,18 +14,21 @@ contract V1Token {
 
     error InsufficientBalance(address account);
     error InsufficientAllowance(address account);
+    error InvalidAddress();
 
     string public name;
     string public symbol;
     uint256 public totalSupply;
     mapping(address => uint256) public balanceOf;
     mapping(address => mapping(address => uint256)) public allowance;
+    address private _owner;
 
     constructor() {
         name = "V1Token";
         symbol = "V1";
-        totalSupply = 1000000000000000000000000;
-        balanceOf[msg.sender] = 100000000000000000000000;
+        totalSupply = 1000000*10**decimals();
+        _owner = msg.sender;
+        _mint(_owner, 100000*10**decimals());
     }
 
     function transfer(address _to, uint256 _value) public returns (bool success) {
@@ -60,5 +63,16 @@ contract V1Token {
         }
         emit Transfer(_from, _to, _value);
         return true;
+    }
+
+    function _mint (address _to, uint256 value) internal {
+        if (_to == address(0) || _to != _owner) {
+            revert InvalidAddress();
+        }
+        balanceOf[_to] = value;
+    }
+
+    function decimals () pure public returns (uint256) {
+        return 18;
     }
 }
