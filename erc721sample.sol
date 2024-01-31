@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/utils/Base64.sol";
 
 
 /**
@@ -12,6 +11,7 @@ import "@openzeppelin/contracts/utils/Base64.sol";
    * @dev bank implementation
    * @custom:dev-run-script scripts/deploy_with_ethers.ts
    */
+
 
 contract V1Token is IERC721, IERC721Metadata {
 
@@ -89,15 +89,15 @@ contract V1Token is IERC721, IERC721Metadata {
             revert TokenNotExist(_id);
         }
         string memory baseUri = _baseUri();
-        // return string(abi.encodePacked(baseUri, _id.toString(), '.jpg'));
+
 
         bytes memory imageUri = abi.encodePacked(baseUri, _id.toString(), '.jpg');
-        return string(abi.encodePacked('data:application/json;base64,',
-            Base64.encode(bytes(abi.encodePacked(
-                '{"name":"', 'V1NFT Number ', _id.toString(),'","description":"', 'A V1NFT Number.', 'All data is stored onchain."',
-                ',"image":"',
-                'data:image/svg+xml;base64,', imageUri,'"}')))
-        ));
+
+        return string(abi.encodePacked(abi.encodePacked(
+            '{"name":"', 'V1NFT Number ', _id.toString(),'","description":"', 'A V1NFT Number.', ' All data is stored onchain."',',"image":"', imageUri,'"}'))
+        );
+
+        // return string(abi.encodePacked(baseUri, _id.toString(), '.jpg'));
     }
 
     function _transfer (address _from, address _to, uint256 _id) internal {
