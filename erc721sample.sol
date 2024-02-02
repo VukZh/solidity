@@ -17,25 +17,10 @@ contract V11NFTToken is ERC721, ERC721URIStorage, Ownable {
 
     function safeMint(address to) public onlyOwner {
         string memory baseUri = _baseUri();
-        bytes memory imageUri = abi.encodePacked(
-            baseUri,
-            lastId.toString(),
-            ".jpg"
-        );
         string memory uri = string(
-            abi.encodePacked(
-                abi.encodePacked(
-                    '{"name":"',
-                    "V11NFT Number ",
-                    lastId.toString(),
-                    '","description":"',
-                    "A V11NFT Number.",
-                    ' All data is stored onchain."',
-                    ',"image":"',
-                    imageUri,
-                    '"}'
-                )
-            )
+            abi.encodePacked(baseUri,
+                lastId.toString(),
+                ".json")
         );
         _safeMint(to, lastId);
         _setTokenURI(lastId, uri);
