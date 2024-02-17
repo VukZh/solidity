@@ -1,1 +1,7 @@
 .idea
+
+/.env
+/artifacts/
+/cache/
+/node_modules/
+/coverage.json
