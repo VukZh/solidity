@@ -54,6 +54,8 @@ interface INativeBank {
 
 contract Bank_1 is INativeBank {
 
+    event FallbackMsgData(bytes data);
+
     mapping(address => uint256) public balanceOf;
 
     error ZeroAmount(address account);
@@ -75,5 +77,14 @@ contract Bank_1 is INativeBank {
             balanceOf[msg.sender] -= amount;
         }
         emit Withdrawal(msg.sender, amount);
+    }
+
+    receive() external payable {
+        this.deposit();
+    }
+
+    fallback() external payable {
+        this.deposit();
+        emit FallbackMsgData(msg.data);
     }
 }
